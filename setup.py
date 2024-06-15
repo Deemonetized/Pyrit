@@ -34,7 +34,7 @@ UnixCCompiler.src_extensions.append('.S')
 
 EXTRA_COMPILE_ARGS = ['-Wall', '-fno-strict-aliasing',
                       '-DVERSION="%s"' % (VERSION,)]
-# Support for AES-NI-intrinsics is not found everyhwere
+# Support for AES-NI-intrinsics is not found everywhere
 if sys.platform in ('darwin', 'linux2') and \
    platform.machine() in ('x86_64', 'i386'):
     EXTRA_COMPILE_ARGS.extend(('-maes', '-mpclmul'))
@@ -50,13 +50,13 @@ class LazyBuilder(build_ext):
 
     def build_extension(self, ext):
         try:
-            return super().build_extension(ext)
+            return super(LazyBuilder, self).build_extension(ext)
         except CompileError:
             if ext.extra_compile_args and '-maes' in ext.extra_compile_args:
-                print("Failed to build; Compiling without AES-NI")
+                print "Failed to build; Compiling without AES-NI"
                 ext.extra_compile_args.remove('-maes')
                 ext.extra_compile_args.remove('-mpclmul')
-                return super().build_extension(ext)
+                return super(LazyBuilder, self).build_extension(ext)
             else:
                 raise
 
